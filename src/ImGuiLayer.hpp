@@ -1,5 +1,4 @@
-#ifndef __IMGUI_LAYER__
-#define __IMGUI_LAYER__
+#pragma once
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -26,6 +25,4 @@ class ImGuiLayer {
         void setupDockspace();
 
         static bool showDemoWindow; ///< Toggle IMGui Demo Window for Docs
-    };
-
-#endif // __IMGUI_LAYER__
+};

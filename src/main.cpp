@@ -1,24 +1,25 @@
+#include "FrameBuffer.hpp"
 #include "ImGuiLayer.hpp"
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <cstdio>
 
-int main(void)
-{
+void errorCallback(int error, const char* description) {
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+int main(void) {
     GLFWwindow* window;
 
+    glfwSetErrorCallback(errorCallback);
     /* Initialize the library */
     if (!glfwInit())
         return -1;
 
-    const char* glsl_version = "#version 430";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -32,6 +33,10 @@ int main(void)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
+    if (glewInit() != GLEW_OK) {
+        printf("Could not initialise Glew.\n");
+    }
+
     ImGuiLayer uiLayer;
     uiLayer.init(window);
 
@@ -39,6 +44,7 @@ int main(void)
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    FrameBuffer* renderTarget = new FrameBuffer(640, 480);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -47,6 +53,12 @@ int main(void)
 
         // Start the Dear ImGui frame
         uiLayer.begin();
+
+        renderTarget->bind();
+
+        //glDrawArrays(GL_)
+
+        renderTarget->unbind();
 
         uiLayer.render();
 
@@ -70,13 +82,13 @@ int main(void)
         float height = ImGui::GetContentRegionAvail().y;
 
         // TODO:
-        //ImGui::Image(
-                //(ImTextureID)engine.getSceneBuffer()->getTextureID(),
-                ////ImGui::GetContentRegionAvail(),
+        ImGui::Image(
+                (ImTextureID)renderTarget->getTextureID(),
+                ImGui::GetContentRegionAvail(),
                 //ImGui::GetWindowSize(),
-                //ImVec2(0, 1),
-                //ImVec2(1, 0)
-                //);
+                ImVec2(0, 1),
+                ImVec2(1, 0)
+                );
 
         ImGui::End();
 

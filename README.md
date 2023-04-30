@@ -10,4 +10,11 @@ OpenGL/GLM/ImGui/GLFW project template
 
 # Included features
 
-* TODO: Texture, ShaderProgram, Framebuffer, Application classes
+ * OpenGL Abstractions:
+   - Texture with texture loading using stb_image
+   - Shader
+   - FrameBuffer
+   - GL Error handling macro
+ * Helpers:
+   - Utility method to load file onto a buffer
+   - ImGui abstraction class
