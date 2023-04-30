@@ -1,5 +1,6 @@
 #include "FrameBuffer.hpp"
 #include "ImGuiLayer.hpp"
+#include "Shader.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -53,6 +54,27 @@ int main(void) {
 
     FrameBuffer* renderTarget = new FrameBuffer(640, 480);
 
+    // TESTING Rendering Setup Code
+    Shader* simpleShader = new Shader("shaders/triangleTest.vert", "shaders/triangleTest.frag");
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int vaoID, vboID;
+    glGenBuffers(1, &vboID);
+    glGenVertexArrays(1, &vaoID);
+
+    glBindVertexArray(vaoID);
+    glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         /* Poll for and process events */
@@ -63,7 +85,9 @@ int main(void) {
 
         renderTarget->bind();
 
-        //glDrawArrays(GL_)
+        simpleShader->bind();
+        glBindVertexArray(vaoID);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         renderTarget->unbind();
 
