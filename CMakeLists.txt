@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Cmake will generate compile_commands.json file used by clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+set(GLFW_BUILD_DOCS OFF)
+
 # These require findPackageName.cmake file to be available
 # as an alternative we could use find_library() instead
 find_package(OpenGL REQUIRED)
