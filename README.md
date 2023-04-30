@@ -18,3 +18,6 @@ OpenGL/GLM/ImGui/GLFW project template
  * Helpers:
    - Utility method to load file onto a buffer
    - ImGui abstraction class
+
+
+![DEMO](screenshot.png?raw=true "Minimal skeleton demo application")
