@@ -57,10 +57,10 @@ int main(void) {
     // TESTING Rendering Setup Code
     Shader* simpleShader = new Shader("shaders/triangleTest.vert", "shaders/triangleTest.frag");
 
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+    glm::vec3 vertices[] = {
+        {-0.5, -0.5, 0.0},
+        {0.5, -0.5, 0.0},
+        {0.0,  0.5, 0.0}
     };
 
     unsigned int vaoID, vboID;
@@ -71,9 +71,8 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, vboID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     glEnableVertexAttribArray(0);
-
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
