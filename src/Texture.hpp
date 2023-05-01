@@ -7,7 +7,7 @@
 class Texture {
     public:
         // Initialise empty texture, used by framebuffers
-        Texture(GLenum targetType = GL_TEXTURE_2D) : rendererID(0), target(targetType) {}
+        Texture(GLenum targetType = GL_TEXTURE_2D, unsigned char* data = nullptr) : rendererID(0), target(targetType), localBuffer(data) {}
         void init(int w, int h, unsigned int id = 0, GLfloat filter = GL_LINEAR, GLint internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clamp = false);
         // Created specifically to init depth cubemap used for omnidirectional shadow mapping
         void initCubeMap(int w, int h, unsigned int id = 0, GLfloat filter = GL_NEAREST, GLint internalFormat = GL_DEPTH_COMPONENT16, GLenum format = GL_DEPTH_COMPONENT);
@@ -22,6 +22,9 @@ class Texture {
 
         void bind(unsigned int slot = 0) const;
         void unbind() const;
+
+        unsigned char* getData() { return localBuffer; }
+        void setData(unsigned char* data) { localBuffer = data; }
 
         inline int getWidth() const { return width; }
         inline int getHeight() const { return height; }

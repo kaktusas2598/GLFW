@@ -24,7 +24,9 @@ void Texture::init(int w, int h, unsigned int id, GLfloat filter, GLint internal
     }
 
     //GLCall(glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, NULL));
-    GLCall(glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_FLOAT, NULL));
+    //GLCall(glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_FLOAT, NULL));
+    // Had to set unsigned_byte to set pixels manually here
+    GLCall(glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, localBuffer));
 }
 
 void Texture::initCubeMap(int w, int h, unsigned int id, GLfloat filter, GLint internalFormat, GLenum format) {
