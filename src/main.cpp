@@ -108,14 +108,9 @@ int main(void) {
 
         ImGui::Begin("Viewport");
 
-        float width = ImGui::GetContentRegionAvail().x;
-        float height = ImGui::GetContentRegionAvail().y;
-
-        // TODO:
         ImGui::Image(
                 (ImTextureID)renderTarget->getTextureID(),
                 ImGui::GetContentRegionAvail(),
-                //ImGui::GetWindowSize(),
                 ImVec2(0, 1),
                 ImVec2(1, 0)
                 );
