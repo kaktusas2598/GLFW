@@ -1,10 +1,7 @@
 #include "FrameBuffer.hpp"
 #include "ImGuiLayer.hpp"
 #include "Shader.hpp"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <cstdio>
+#include "Window.hpp"
 
 void errorCallback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -16,40 +13,17 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 }
 
 int main(void) {
-    GLFWwindow* window;
+    Window window;
+    window.init(640, 480);
 
+    // TODO: refactor callback and poll event code to glfw abstraction layer
     glfwSetErrorCallback(errorCallback);
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwSetKeyCallback(window, keyCallback);
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
-
-    if (glewInit() != GLEW_OK) {
-        printf("Could not initialise Glew.\n");
-    }
+    glfwSetKeyCallback(window.getHandle(), keyCallback);
 
     ImGuiLayer uiLayer;
-    uiLayer.init(window);
+    uiLayer.init(window.getHandle());
 
-    // Our state
-    bool show_demo_window = true;
+    bool showDemoWindow = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     FrameBuffer* renderTarget = new FrameBuffer(640, 480);
@@ -75,7 +49,7 @@ int main(void) {
     glEnableVertexAttribArray(0);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {
+    while (!window.shouldClose()) {
         /* Poll for and process events */
         glfwPollEvents();
 
@@ -83,22 +57,22 @@ int main(void) {
         uiLayer.begin();
 
         renderTarget->bind();
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 
         simpleShader->bind();
-        glBindVertexArray(vaoID);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         renderTarget->unbind();
 
         uiLayer.render();
 
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        if (showDemoWindow)
+            ImGui::ShowDemoWindow(&showDemoWindow);
 
         ImGui::Begin("Settings");                          // Create a window called "Hello, world!" and append into it.
 
         ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+        ImGui::Checkbox("Demo Window", &showDemoWindow);      // Edit bools storing our window open/close state
 
         ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
@@ -120,18 +94,13 @@ int main(void) {
 
         uiLayer.end();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
+        window.swapBuffers();
     }
 
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
 
     return 0;
 }
